@@ -1,0 +1,23 @@
+# Documentation classes, read by scripts/docs_impact.py (living-documentation module).
+#
+# record: dated documents that say what was true on their date; never checked.
+# living: documents that must be true today. `code` lists what each one describes
+#         (globs: ** crosses folders, * does not). A branch that changes that code
+#         and not the document leaves it in REVIEW, and the merge gate refuses
+#         until the document is updated or its "Revisado:" line is touched.
+#
+# Every .md or .html under docs/ is in one class or the other, or the check fails.
+# /configurar-proyecto replaces the skeleton's own entries with the project's.
+
+record = [
+    "docs/meeting-log.md",
+    "docs/backlog.md",
+    "docs/practicas.md",
+    "docs/planes/**",
+]
+
+[living."README.md"]
+code = [".claude/hooks/**", ".claude/settings.json", ".claude/project.toml", "scripts/**"]
+
+[living.".claude/skills/README.md"]
+code = [".claude/skills/*/SKILL.md"]

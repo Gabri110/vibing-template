@@ -1,0 +1,5 @@
+# Gitignored files every new worktree needs. Claude Code copies them when it creates
+# a worktree (.gitignore syntax; only files that are also gitignored get copied).
+# Big dependency folders (node_modules, .venv) are better reinstalled or linked.
+.env
+.env.local

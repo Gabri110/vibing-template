@@ -1,0 +1,52 @@
+# Project configuration read by the hooks in .claude/hooks/.
+# The guided first conversation (/configurar-proyecto) fills it in; editing it by
+# hand works the same. scripts/check.py checks that it still parses.
+
+[skeleton]
+version = "1.0.0"     # skeleton release this project started from (README, "Actualizar el esqueleto")
+configured = false    # true once /configurar-proyecto has run; until then the session start says so
+
+[branches]
+integration = "main"  # where finished work lands, squashed from a short branch or worktree
+human_commit = false  # true: on protected branches Claude only prepares `git merge --squash`; a person commits
+allow_no_ff = true    # allow `git merge --no-ff <branch>` for multi-day branches whose commits matter
+push_allow = []       # if not empty, only these refs may be pushed (globs, e.g. ["main", "feature/*", "v*"])
+# The delivery branch, if there is one, lives in scripts/release.toml (`branch`).
+
+[style]
+skill = ""            # writing-style skill to suggest after editing a document, e.g. "humanizer:humanizer"
+
+# Client code repo wired with scripts/boundary/setup_code_repo.py (client-boundary module).
+# Sessions in that repo run these hooks with this policy: commits on its protected
+# branches are made by a person, and the guard fails closed.
+[boundary]
+integration = "dev"
+push_allow = ["dev", "master", "v*"]
+attribution = false   # false: no Claude co-author lines in that repo's commits and pull requests
+
+# Keyword triggers for prompt.py: when a prompt matches `pattern` (a regex, case
+# insensitive), the hook names the skill to the model. Only skills that exist are named.
+[[skills.trigger]]
+skill = "configurar-proyecto"
+pattern = "configur\\w* (el |del )?proyecto|primera (sesi[oó]n|conversaci[oó]n)|onboarding|arranc\\w* el proyecto"
+note = "guía la configuración del proyecto: objetivos, idiomas, stack, ramas, coautoría, verificación y módulos"
+
+[[skills.trigger]]
+skill = "verificar"
+pattern = "verific\\w*|comprueba que|funciona\\b|c[oó]mo queda|captura|pru[eé]ba(lo|la)"
+note = "verificador en contexto propio: devuelve afirmaciones con su prueba y no arregla nada"
+
+[[skills.trigger]]
+skill = "cerrar-tarea"
+pattern = "cierra la (rama|tarea)|cerrar la (rama|tarea)|integra(r)? la rama|squash|merge a (main|dev)"
+note = "la invoca la persona con /cerrar-tarea: verificación, documentos, squash desde el checkout principal y limpieza"
+
+[[skills.trigger]]
+skill = "revision-periodica"
+pattern = "revisi[oó]n (semanal|peri[oó]dica)|qu[eé] se repite|candidat\\w* a skill|reglas que nadie"
+note = "revisión de prácticas: lo repetido tres veces, reglas que nadie cumple, permisos y worktrees huérfanos"
+
+[[skills.trigger]]
+skill = "sincronizar-docs"
+pattern = "(documento|documentaci[oó]n|docs?) (al d[ií]a|actualizad\\w*|desfasad\\w*)|sincroniza\\w*"
+note = "contrasta un documento vivo con el código, afirmación por afirmación, y corrige el documento"

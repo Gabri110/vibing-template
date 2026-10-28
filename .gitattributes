@@ -1,0 +1,7 @@
+# Shell scripts and git hooks must stay LF: with core.autocrlf on a Windows checkout
+# they would get CRLF, and bash cannot run them.
+* text=auto
+*.sh text eol=lf
+*.py text eol=lf
+.claude/hooks/* text eol=lf
+scripts/boundary/* text eol=lf

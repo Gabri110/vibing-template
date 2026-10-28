@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(git status *)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git show *)",
+      "Bash(git branch --show-current)",
+      "Bash(git worktree list *)",
+      "Bash(python3 scripts/check.py *)",
+      "Bash(python scripts/check.py *)",
+      "Bash(py -3 scripts/check.py *)",
+      "Bash(python3 scripts/docs_impact.py *)",
+      "Bash(python scripts/docs_impact.py *)",
+      "Bash(py -3 scripts/docs_impact.py *)",
+      "Bash(python3 scripts/bootstrap.py doctor *)",
+      "Bash(python scripts/bootstrap.py doctor *)",
+      "Bash(py -3 scripts/bootstrap.py doctor *)",
+      "Bash(python3 scripts/release.py --dry-run *)",
+      "Bash(python3 scripts/release.py --init *)",
+      "Bash(python3 scripts/release.py manifest *)",
+      "Bash(py -3 scripts/release.py --dry-run *)",
+      "Bash(py -3 scripts/release.py --init *)",
+      "Bash(py -3 scripts/release.py manifest *)"
+    ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git merge *)",
+      "Bash(python3 scripts/release.py)",
+      "Bash(python scripts/release.py)",
+      "Bash(py -3 scripts/release.py)",
+      "Bash(python3 scripts/boundary/setup_code_repo.py *)",
+      "Bash(python scripts/boundary/setup_code_repo.py *)",
+      "Bash(py -3 scripts/boundary/setup_code_repo.py *)"
+    ],
+    "deny": [
+      "Bash(git push *--force*)",
+      "Bash(git push *-f *)",
+      "Bash(git push *-f)",
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(./**/secrets/**)"
+    ]
+  },
+  "worktree": {
+    "baseRef": "head"
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/run.sh\" session_start.py",
+            "timeout": 20
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/run.sh\" prompt.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash|PowerShell",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/run.sh\" pre_bash.py",
+            "timeout": 200
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PROJECT_DIR}/.claude/hooks/run.sh\" post_edit.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+# Steps of the single verification (scripts/check.py), in order; the first failure stops it.
+#
+#   name     what the output calls it
+#   cmd      the command, run from the repo root; "{python}" is the interpreter running check.py
+#            (on Windows, npm is "npm.cmd")
+#   builtin  a check that lives in check.py instead of a command: "config" or "compat"
+#   fast     true: also in --fast, which runs before every push, so keep it to seconds
+#   when     run only if this path exists: a module that is not active yet stays out
+#   timeout  seconds (default 120 in --fast, 1800 in the full run)
+#
+# The guided configuration (/configurar-proyecto) adds the stack's lint, types, tests and
+# build here, the cheap ones as fast steps.
+
+[[step]]
+name = "Configuración"
+builtin = "config"
+fast = true
+
+[[step]]
+name = "Compatible con Python 3.11"
+builtin = "compat"
+fast = true
+
+[[step]]
+name = "Documentación viva"
+cmd = ["{python}", "scripts/docs_impact.py", "--check"]
+when = "docs/manifest.toml"
+fast = true
+
+[[step]]
+name = "Tests del esqueleto"
+cmd = ["{python}", "-m", "unittest", "discover", "-s", ".claude/tests", "-q"]
+fast = false

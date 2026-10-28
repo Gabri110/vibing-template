@@ -1,0 +1,14 @@
+# Personal Claude Code settings and per-machine worktrees: never shared.
+.claude/settings.local.json
+.claude/worktrees/
+CLAUDE.local.md
+.remember/
+
+# Secrets stay out of git. A Read deny rule in .claude/settings.json keeps Claude's
+# file tools away from them, but not a shell `cat`: keep real secrets outside the tree.
+.env
+.env.*
+!.env.example
+
+__pycache__/
+*.pyc

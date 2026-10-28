@@ -1,0 +1,34 @@
+# What must never reach the client's code repo (client-boundary module).
+# Read by leak_scan.py, which runs in that repo's pre-commit (on its protected
+# branches) and commit-msg hooks, in the merge gate of pre_bash.py, and on demand.
+# Every rule says why it exists; /configurar-proyecto fills in the project's names.
+#
+#   terms    substrings, any case
+#   words    whole words, exact case (people, internal code names)
+#   pattern  a regular expression
+#   mask     true: the finding is printed cut short (secrets)
+
+[[rule]]
+name = "herramienta"
+why = "rastros de la herramienta en commits y ficheros, si la política del proyecto es no dejarlos"
+terms = ["co-authored-by: claude", "generated with claude code", "claude.ai/code"]
+
+[[rule]]
+name = "secreto"
+why = "una clave escrita en un fichero viaja con él a todas partes"
+pattern = '''(?i)(api[_-]?key|secret|token|password)\s*[:=]\s*['"][A-Za-z0-9_\-]{16,}['"]'''
+mask = true
+
+[[rule]]
+name = "interno"
+why = "nombres del equipo y rutas del repo interno"
+terms = []   # e.g. the internal repo's folder name
+words = []   # e.g. team members' names
+
+[[rule]]
+name = "marca"
+why = "marcas de trabajo a medio hacer: lo que es una limitación conocida se escribe como tal"
+words = ["FIXME", "XXX"]
+
+# Findings that are fine on purpose: "path glob" = ["rule", ...] ("*" for all), with the reason above each.
+[allow]

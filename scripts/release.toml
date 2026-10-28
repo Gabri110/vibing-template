@@ -1,0 +1,9 @@
+# Release module (scripts/release.py): one version per delivery.
+# Inert until `python3 scripts/release.py --init` creates VERSION and CHANGELOG.md.
+
+integration = "main"      # releases are cut from here (same as [branches] integration in .claude/project.toml)
+branch = ""               # delivery branch that only moves to a release, by fast-forward (e.g. "master"); empty: tags only
+version_file = "VERSION"
+changelog = "CHANGELOG.md"
+tag_prefix = "v"
+also_update = []          # other files that carry the version, e.g. ["pyproject.toml", "package.json"]
